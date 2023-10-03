@@ -99,6 +99,7 @@ onRemove(selectedList, removedItem) {
 | `customCloseIcon` | `ReactNode or string` | `undefined` | Custom close icon and can be string or react component(Check demo for reference)
 | `selectedValueDecorator` | `(string) => ReactNode \| string` | `v => v` | A function that can be used to modify the representation selected value
 | `optionValueDecorator` | `(string) => string` | `v => v` | A function that can be used to modify the representation the available options
+| `groupSelectAll` | `any` | `''` | it depends on the value of groupBy flag, if groupBy flag has any value then user can select all options in that group by clicking the title.
 ----
 
 

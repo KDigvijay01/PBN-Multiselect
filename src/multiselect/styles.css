@@ -111,10 +111,12 @@
   padding-right: 20px;
 }
 li.groupHeading {
-  color: #908e8e;
-  pointer-events: none;
+  color: #222121;
+  /* pointer-events: none; */
   padding: 5px 15px;
+  cursor: pointer;
 }
+
 li.groupChildEle {
   padding-left: 30px;
 }

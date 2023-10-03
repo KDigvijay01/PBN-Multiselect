@@ -28,6 +28,8 @@ export default {
 
 const Template: Story<IMultiselectProps> = (args) => <MultiSelect {...args} />;
 
+
+
 export const FlatArray = Template.bind({});
 FlatArray.args = {
   options: flatArray,

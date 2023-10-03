@@ -16,6 +16,7 @@ const closeIconTypes = {
 };
 
 function useOutsideAlerter(ref, clickEvent) {
+  
   useEffect(() => {
       function handleClickOutside(event) {
           if (ref.current && !ref.current.contains(event.target)) {
@@ -55,7 +56,9 @@ export class Multiselect extends React.Component<IMultiselectProps, any> {
 			showCheckbox: props.showCheckbox,
       keepSearchTerm: props.keepSearchTerm,
       groupedObject: [],
-      closeIconType: closeIconTypes[props.closeIcon] || closeIconTypes['circle']
+      closeIconType: closeIconTypes[props.closeIcon] || closeIconTypes['circle'],
+      groupSelectAll: props.groupSelectAll,
+
     };
     // @ts-ignore
     this.optionTimeout = null;
@@ -87,7 +90,10 @@ export class Multiselect extends React.Component<IMultiselectProps, any> {
     this.hideOnClickOutside = this.hideOnClickOutside.bind(this);
     this.onCloseOptionList = this.onCloseOptionList.bind(this);
     this.isVisible = this.isVisible.bind(this);
+    this.onGroupSelectAll=this.onGroupSelectAll.bind(this);
   }
+
+  
 
   initialSetValue() {
     const { showCheckbox, groupBy, singleSelect } = this.props;
@@ -136,8 +142,9 @@ export class Multiselect extends React.Component<IMultiselectProps, any> {
   componentDidUpdate(prevProps) {
     const { options, selectedValues } = this.props;
     const { options: prevOptions, selectedValues: prevSelectedvalues } = prevProps;
+
     if (JSON.stringify(prevOptions) !== JSON.stringify(options)) {
-      this.setState({ options, filteredOptions: options, unfilteredOptions: options }, this.initialSetValue);
+      this.setState({ options, filteredOptions: options, unfilteredOptions: options },  this.initialSetValue);
     }
     if (JSON.stringify(prevSelectedvalues) !== JSON.stringify(selectedValues)) {
       this.setState({ selectedValues: Object.assign([], selectedValues), preSelectedValues: Object.assign([], selectedValues) }, this.initialSetValue);
@@ -169,6 +176,7 @@ export class Multiselect extends React.Component<IMultiselectProps, any> {
     if (!selectedValues.length && !skipCheck) {
       return;
     }
+
     if (isObject) {
       let optionList = unfilteredOptions.filter(item => {
         return selectedValues.findIndex(
@@ -204,9 +212,10 @@ export class Multiselect extends React.Component<IMultiselectProps, any> {
       r[key].push(a);
       return r;
     }, Object.create({}));
-
     this.setState({ groupedObject });
   }
+
+
 
   onChange(event) {
     const { onSearch } = this.props;
@@ -317,6 +326,13 @@ export class Multiselect extends React.Component<IMultiselectProps, any> {
     }
   }
 
+  onGroupSelectAll(listOfValues){
+    listOfValues.forEach(element => {
+      if(this.props.groupBy && !this.isSelectedValue(element))
+      this.onSelectItem(element);
+    });
+  }
+
   onSelectItem(item) {
     const { selectedValues } = this.state;
     const { selectionLimit, onSelect, singleSelect, showCheckbox } = this.props;
@@ -379,6 +395,10 @@ export class Multiselect extends React.Component<IMultiselectProps, any> {
         </ul>
       );
     }
+
+
+
+
     return (
       <ul className={`optionContainer`} style={style['optionContainer']}>
         {options.length === 0 && <span style={style['notFound']} className={`notFound`}>{emptyRecordMsg}</span>}
@@ -390,10 +410,12 @@ export class Multiselect extends React.Component<IMultiselectProps, any> {
   renderGroupByOptions() {
     const { isObject = false, displayValue, showCheckbox, style, singleSelect } = this.props;
     const { groupedObject } = this.state;
+
+
     return Object.keys(groupedObject).map(obj => {
 			return (
 				<React.Fragment key={obj}>
-					<li className="groupHeading" style={style['groupHeading']}>{obj}</li>
+					<li className="groupHeading" style={style['groupHeading']} onClick={()=>this.onGroupSelectAll(groupedObject[obj])}>{obj}</li>
 					{groupedObject[obj].map((option, i) => {
             const isSelected = this.isSelectedValue(option);
             return (
@@ -629,5 +651,5 @@ Multiselect.defaultProps = {
   className: '',
   customArrow: undefined,
   selectedValueDecorator: v => v,
-  optionValueDecorator: v => v
+  optionValueDecorator: v => v,
 } as IMultiselectProps;
